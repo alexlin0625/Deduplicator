@@ -68,7 +68,7 @@ Please refer to [INSTALL.txt] in this repo.
 #### Command Line Interface run down:
 * The program will promp the user if they want to create a new locker when it is run. It will ask to choose a name for the locker.
 * It will then give the user the option to either: **Store** files into locker; **Retrieve** existing file from locker; **Delete** existing file from locker; Check existing files in locker; **Finish** will end the program and print locker statistics.
-  * **Store (Single file / Directory):**
+  ## **Store (Single file / Directory):**
   
   1. **If same file name already exists in locker:** 
   
@@ -93,7 +93,48 @@ Please refer to [INSTALL.txt] in this repo.
   * For every file in the directory, it will go through the same decisions as storing a single file.
   
   
+  ## **Retrieve:**
+  1. The program will not allow user to retrieve files if the locker is empty. Will prompt user to store a file in order to retrieve.
   
+  2. Prompt the user to enter the path of a directory in which the user wants to save the retrieved file. Will detect if path is a valid directory.
+  
+  3. Prompt the user to enter the name of the file to be retrieved. Search the locker for the file:
+  * **If file does not exist** in locker, it will be made known to the user
+  * **If file exists in locker**, will find the file's information, and use its references from its "file retriever" to map to its corresponding chunks in the dictionary. The file will be reconstructed and stored into user's selected output path.
+  
+  ## **Delete:**
+  
+  1. The program will not allow user to delete files if the locker is empty. Will prompt user to store a file in order to delete.
+  2. Prompt the user to enter the name of the file to be deleted. Search the locker for the file:
+   * **If file does not exist** in locker, it will be made known to the user
+   * **If file exists in locker**, it will first remove all of the file's references and chunks from the dictionary only if no other file in the locker uses those same references and chunks.
+   * Remove the MyFile object from the file locker. Update locker size.
+   
+  ## **Check files:**
+  
+  1. The program will not allow user to check for current files in locker if the locker is empty. Will prompt user to store a file in order to retrieve.
+  2. Display the name of all files that's been successfully stored in locker, along with the file's original size and the actual size stored after deduplication.
+  
+  ## **Finish:**
+  
+  1. Display locker statistics:
+  * Locker name
+  * Size of locker
+  * Files in locker
+  * Deduplication ratio
+  
+  
+  #### Data Structures and Algorithm Implementation:
+
+
+
+
+
+
+
+  
+
+
   
   
   

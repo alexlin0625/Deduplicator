@@ -33,10 +33,27 @@ Please refer to [III. Work Contribution] from Alex Jeffrey Lin. Section contains
 * Please refer to [III. Work Contribution] from Alex Jeffrey Lin. Section provides complete instructions and detailed explainations on data structure and algorithm implementations.
 
 5. Develop networked access to your locker. [5%]
+* This implementations run by Server.java, Client.java and NetworkGUI.java. Please refer to [III. Work Contribution] from Jiaqi Sun. Section provides detailed explaination on Server/Client interface. Complete instructions please refer to INSTALL.txt in this repo.
 
 6. Develop a Graphical User Interface that displays storage progress (and file allocation statistics) in real time. [5%]
+* Working GUI has successfully implemented. Please refer to [III. Work Contribution] from Routian Liu. Section provides detailed explanation on GUI functionalities. 
+
+### Features removed from midterm status report:
+1. Implement efficient substring search (i.e. list all locker files that contain a given substring). 
+* since we are chunking files by bytes. And then each chunk are stored as hash value. We are not dealing with the characters in the content. Therefore, doing substring search on specific word would not make sense on our implementation. 
+2. Ability to efficiently store executables with similar source code.
+* We weren't sure about the correct approach to this feature.
+
+### Features added for final working implementation:
+1. Ability to store directiories of files as one entity. 
+* After completing storing one file successfully. We would like to store multiple files from one directory instead of storing one by one manually. Therefore, a queue was implemented to store all the files in order. The detailed process is explained in the work breakdown section. 
+2. Ability to efficiently store similar videos. 
+* Originally thought this feature could be hard. But then after the chunking algorithm was completed. It's able to deduplicate videos and store in the locker. Since videos are generally large file, the chunk size would be adjusted under some conditions. The detailed process is explained in the work break down section. 
 
 ### relevant references and background materials.
+1. https://blog.teamleadnet.com/2012/10/rabin-karp-rolling-hash-dynamic-sized.html?fbclid=IwAR0PhUcACks6zwYk5dGyY2GVNw7T8R6G3_qU1ZTno2PACkdjPdhzxih9wGo
+2. https://github.com/YADL/yadl/wiki/Rabin-Karp-for-Variable-Chunking
+3. https://medium.com/@glizelataino94/rabin-karp-algorithm-5686ccc0d4e0
 
 # II. Code
 ### Working code
@@ -58,13 +75,9 @@ package DeDup;
 ### Run
 Please refer to [INSTALL.txt] in this repo. 
 
-
-### All testing code utilized to observe the correctness of your code.
-
-
 # III. Work Contribution 
 
-### Alex Jeffrey Lin: 
+### [Alex Jeffrey Lin] 
 #### Command Line Interface run down:
 * The program will promp the user if they want to create a new locker when it is run. It will ask to choose a name for the locker.
 * It will then give the user the option to either: **Store** files into locker; **Retrieve** existing file from locker; **Delete** existing file from locker; Check existing files in locker; **Finish** will end the program and print locker statistics.
@@ -163,7 +176,7 @@ Please refer to [INSTALL.txt] in this repo.
    
    * To achieve the idea of dynamic size chunking, we used the Rabin-Karp Rolling Hash algorithm. Essentially, the technique is to compute the hash value at every byte position in the file. Algorithm uses a sliding window that scans over the data bytes and computes a hash value at each point. The hash value at position "i" can be computed from the hash value at position "i-1": **H(X(i,n)) = H(X(i-1, n) + Xi - X(i-n)** where "n" is the size of the window (chunkSize) and X(i, n) is the window at position "i". While this equation is only calculating the hash value of the initial window, it does not calculate the hash value of the next window after sliding. 
    
-   * To achieve the idea of "rolling hash" on a sliding window: **hashvalue = hashvalue * largeprime + incomingbyte - outgoingbyte * polynomialmultiplier** For details on the specific implementation and example, please refer to [III. Work Contribution] Gang Wei & Fuyao Wang
+   * To achieve the idea of "rolling hash" on a sliding window: **hashvalue = hashvalue * largeprime + incomingbyte - outgoingbyte * polynomialmultiplier** For details on the specific implementation and example, please refer to [III. Work Contribution] **Gang Wei & Fuyao Wang**
    
    ## **Statistical Protocol**
    
@@ -174,13 +187,126 @@ timerEnd = System.currentTimeMillis();
    * Console will print out the total time elapsed during the execution of those functions. 
 
 
-  
+### [Routian Liu]
+#### **Graphic User Interface(GUI):**
+
+## Functions:
+
+**create locker:** by entering a name, you can create a new locker and load it automatically.
+
+**select locker:** by entering a name, you can load into a locker you have created before.
+
+**store files:** add files in a created locker. For now, we can add video, image, text and pdf files. Besides, selecting multiple files at a time is available.
+
+**delete files:** delete file in current locker.
+
+**retrieve files:** retrieve file from current locker to a specified directory.
+
+**select output path:** select the directory to store retrieved file.
+
+**clear details:** by clicking this button, you can clear the deduplication information.
+
+**upload progress:** when adding multiple files at one time, we can get the upload progress by this progress bar.
+
+## Information:
+
+**locker contents:** display the files stored in our locker, offering convenience for us to retrieve file.
+
+**deduplication details:** display our work in deduplication, such as deduplication size and ratio.
+
+**console:** display current operation and feedback information.
 
 
+### [Jiaqi Sun]
+#### **Server and Client Interface:**
+
+## Network Features:
+* The client has a GUI.
+* The client can connect to the server and log in to use our deduplicator. Once the client is logged in, the user can do following things:
+  1. input a locker name to create a new locker 
+  2. input a locker name to load an existed locker
+  3. select a single file on the client and send it to the server to store in the current locker
+  4. input the file name to retrieve a file in the current locker
+  5. input the file name to delete a file in the current locker
+  6. check detailed information of all the lockers and files
+
+## Log In System:
+* user can only get access to our server and do dedupplication after they log in.
+* The server stores a dictionary(implemented by hash map) of **key:** user name and **value:** hash value of password.
+* Every time when the server starts a new thread, it will start with a boolean variable to record whether the client is logged in.
+* If that boolean variable is false, the server will ask the client to log in first whenever the client wants to do something.
+* To log in, the client will send the username and the hash value of password to the server and show the response.
+
+functions:
+
+1. **create locker:** the server use a hash map to manage different lockers. When the user wants to create a locker, the server will check whether there is a locker with same name and create a new locker, put it in the hash map if it's a new locker.
+2. **load locker:** the server use that hash map to change current locker into the locker which the user wants to use.
+3. **store file:** the client will send the file to the server using a new data output stream. And the server will store that file in the locker with different methods according to the type of the file and then send some details of storing the file.
+4. **retrieve file:** the client will send the name of the file to the server. The server will retrieve the file using locker.retrieveTheFile and store it on the server. And then the server will send back the file to the client with some retrieve information.
+5. **delete file:** the client will send the name of the file to the server. The server will delete the file using locker.delete.
+6. **check detailed information of all the lockers and files:** the server will traverse the hash map of locker to get all the existed locker and send their information back to the client.
 
 
+### [Gang Wei & Fuyao Wang]
 
+* Implemented dynamic-size chunking algorithm, tested the system and worked on error-handling.
+* At the beginning we only have fixed-size chunking algorithm. But when we deal with the problem like: there is totally only 1 or 2 different characters of 2 different files, fixed-size algorithm is not an efficient way. Why? Because when the window goes through this difference, all the rest of it should change. This is absolutely a waste. To have better performance, (efficiency, time complexity) we need to implement an algorithm that could solve this problem. 
+* By the concept of Rabin-Karp rolling hash algorithm, that creating content based chunks of a file to detect the changed blocks without doing a full byte-by-byte comparison, which is exactly what we need, we constructed this algorithm that could find the “textual fingerprint” of the difference. 
 
+For example:
+
+In traditional algorithms that hashing the file is like:
+
+[3,1,4,1,5,9,2,…]
+
+Supposing window size is 4:
+
+Hash1: hash[3,1,4,1]
+
+Hash2: hash[1,4,1,5]
+
+Hash3: hash[4,1,5,9]
+
+Hash4: hash[1,5,9,2]
+
+……
+
+But in Rabin-Karp implementation, we reuse previous ones, and add a prime number as weighted number. Why we use prime number? Because prime number can avoid collision.
+
+(p as prime number)
+
+Hash1: p^n * 3 + p^(n-1) * 1 + p^(n-2) * 4 + p^(n-3) * 1
+
+Hash2: Hash1 – p^n * 3 + p*5
+
+……
+
+By this concept, we constructed the “for-loop”
+```
+/*for (int i = 0; i < chunkSize; i++) {
+to perfoms initial polynomial hash on first chunk of size “chunkSize”.
+```
+
+```
+Then in the “while” condition,
+/*while (currRKWindowStartIndex + currRKWindowSize < fileBytesLength) {
+```
+
+```
+roll the hash through the whole file, looking for a “textual fingerprint”.
+```
+
+```
+In the “if” condition, 
+/*if ((currHashVal & mask) == 0 || fileBytesCounter == fileBytesLength) {
+```
+
+```
+we reset everything if the character is found, or it is already the last chunk to set window. 
+/*if(!locker.chunkHashExist(hashOutput)) {
+And if the hash doesn’t exist in the dictionary, we insert it. 
+After testing of some cases, we found dynamic-size chunking works ideally as we expected.
+```
 
 
   

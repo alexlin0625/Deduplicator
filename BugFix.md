@@ -40,7 +40,7 @@
   ![alt text](https://github.com/alexlin0625/Deduplicator/blob/master/Pictures/Chunksize%20decision%20bug%20fix%20for%20small%20size%20files.JPG)
 
 
-## IV. Other error handling cases user experience
+## IV. Other error handling cases from user experience
 * We added more error handling cases to improve user experience. Errors handle cases such as invalid inputs for some of our operating cases.  
 
 

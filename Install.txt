@@ -1,0 +1,37 @@
+[Pre-Conditions]
+Target Operating System:  Mac OS & Windows 
+
+==============================================================================================================
+[Supporting files]
+This program did not use any non-standard libraries.
+This program has a minimum requirement of the latest version of Java JDK SE 8 to run.
+You are able to run entire program on IntelliJ.
+
+==============================================================================================================
+[Execution]
+
+Command Line Interface:
+=> Go to terminal, map directory to DeDuplication/src/DeDup
+=> type "java RunDedup.java" to execute the program, or simply run RunDedup.java in IntelliJ.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Client and Server interface: 
+
+=> Consists: [Server.java & Client.java & NetworkGUI.java]
+
+=> To use the client and server, you need to replace 4 variables with your own:
+	1, final String pathname in Server.java. The file received from the client will be stored here.
+	2, final String retrievePath in Server.java. The file retrieved from the locker will be stored here and then sent to the client.
+	3, final String pathname in Client.java. The file received from the server will be stored here.
+	4, final String SERVER_IP in Client.java. You should replace it with the IP of your server.
+
+=>To test the client and server, you can simply run Server.java first on your server computer in IntelliJ. 
+	-> then use another computer to run Client.java in IntelliJ. 
+	-> Once you run Client.java, you will get a GUI to interact with the server and test our functions. 
+
+=> To log in, you can use a default username:username and password:password.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Graphic User Interface:
+=> Simply run "myGUI.java" in IntelliJ
+=> To use GUI properly, you need to specify your own retrieved path before you retrieve files.
+===============================================================================================================
